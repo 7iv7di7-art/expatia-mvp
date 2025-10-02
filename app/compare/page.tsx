@@ -17,21 +17,21 @@ export default async function ComparePage({
 }: {
   searchParams: { a?: string; b?: string };
 }) {
-  const a = searchParams.a
+  const a: any = searchParams.a
     ? await prisma.country.findUnique({
         where: { slug: searchParams.a },
         include: { metrics: true },
       })
     : null;
 
-  const b = searchParams.b
+  const b: any = searchParams.b
     ? await prisma.country.findUnique({
         where: { slug: searchParams.b },
         include: { metrics: true },
       })
     : null;
 
-  const kinds = ["cost", "income", "quality"] as const;
+  const kinds = ["cost", "income", "quality"];
 
   const getLabels = (kind: string) => {
     const la = (a?.metrics ?? [])
@@ -76,8 +76,8 @@ export default async function ComparePage({
           </thead>
           <tbody>
             {kinds.map((kind) => (
-              <tbody key={kind}>
-                <tr>
+              <>
+                <tr key={kind}>
                   <td colSpan={3} className="bg-gray-50 text-xs text-gray-500 p-2 uppercase">
                     {kind}
                   </td>
@@ -90,7 +90,7 @@ export default async function ComparePage({
                     b={getVal(b, kind, label)}
                   />
                 ))}
-              </tbody>
+              </>
             ))}
           </tbody>
         </table>
