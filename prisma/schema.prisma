@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Country {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  currency  String   @default("USD")
+  summary   String   @default("")
+  metrics   Metric[]
+  pros      Pro[]
+  cons      Con[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Metric {
+  id          String   @id @default(cuid())
+  country     Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  countryId   String
+  kind        String   // cost | income | quality
+  label       String
+  value       String
+  unit        String   @default("")
+  source      String   @default("demo")
+  collectedAt DateTime @default(now())
+}
+
+model Pro {
+  id        String   @id @default(cuid())
+  text      String
+  country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  countryId String
+}
+
+model Con {
+  id        String   @id @default(cuid())
+  text      String
+  country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  countryId String
+}
